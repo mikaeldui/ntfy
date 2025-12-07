@@ -566,6 +566,14 @@ Here's a simple example (using the credentials of the `phil` user):
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.example.com/mysecrets")
+        .body("Look ma, with auth")
+        .basic_auth("phil", Some("mypass"))
+        .send();
+    ```
+
 ### Example: UnifiedPush
 [UnifiedPush](https://unifiedpush.org) requires that the [application server](https://unifiedpush.org/developers/spec/definitions/#application-server) (e.g. Synapse, Fediverse Server, …) 
 has anonymous write access to the [topic](https://unifiedpush.org/developers/spec/definitions/#endpoint) used for push messages. 

@@ -63,6 +63,13 @@ Here's an example showing how to publish a simple message using a POST request:
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/mytopic")
+        .body("Backup successful 😀")
+        .send();
+    ```
+    
 If you have the [Android app](subscribe/phone.md) installed on your phone, this will create a notification that looks like this:
 
 <figure markdown>
@@ -166,6 +173,16 @@ a [title](#message-title), and [tag messages](#tags-emojis) 🥳 🎉. Here's an
             'content' => 'Remote access to phils-laptop detected. Act right away.'
         ]
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/phil_alerts")
+        .header("Title", "Unauthorized access detected")
+        .header("Priority", "urgent")
+        .header("Tags", "warning,skull")
+        .body("Remote access to phils-laptop detected. Act right away.")
+        .send();
     ```
 
 <figure markdown>
@@ -303,6 +320,20 @@ an [external image attachment](#attach-file-from-a-url) and [email publishing](#
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/mydoorbell")
+        .header("Click", "https://home.nest.com")
+        .header("Attach", "https://nest.com/view/yAxkasd.jpg")
+        .header("Actions", "http, Open door, https://api.nest.com/open/yAxkasd, clear=true")
+        .header("Email", "phil@example.com")
+        .body("There's someone at the door. 🐶
+   
+    Please check if it's a good boy or a hooman.
+    Doggies have been known to ring the doorbell.")
+        .send();
+    ```
+
 <figure markdown>
   ![priority notification](static/img/android-screenshot-notification-multiline.jpg){ width=500 }
   <figcaption>Notification using a click action, a user action, with an external image attachment and forwarded via email</figcaption>
@@ -384,6 +415,14 @@ you can set the `X-Title` header (or any of its aliases: `Title`, `ti`, or `t`).
             'content' => 'Oh my ...'
         ]
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/controversial")
+        .header("Title", "Dogs are better than cats")
+        .body("Oh my ...")
+        .send();
     ```
 
 <figure markdown>
@@ -485,6 +524,14 @@ You can set the priority with the header `X-Priority` (or any of its aliases: `P
             'content' => 'An urgent message'
         ]
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/phil_alerts")
+        .header("Priority", "5")
+        .body("An urgent message")
+        .send();
     ```
 
 <figure markdown>
@@ -613,6 +660,14 @@ them with a comma, e.g. `tag1,tag2,tag3`.
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/backups")
+        .header("Tags", "warning,mailsrv13,daily-backup")
+        .body("Backup of mailsrv13 failed")
+        .send();
+    ```
+
 <figure markdown>
   ![priority notification](static/img/notification-with-tags.png){ width=500 }
   <figcaption>Detail view of notifications with tags</figcaption>
@@ -720,6 +775,14 @@ As of today, **Markdown is only supported in the web app.** Here's an example of
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/mytopic")
+        .header("Tags", "warning,mailsrv13,daily-backup")
+        .body("Backup of mailsrv13 failed")
+        .send();
+    ```
+
 Here's what that looks like in the web app:
 
 <figure markdown>
@@ -818,6 +881,14 @@ to be delivered in 3 days, it'll remain in the cache for 3 days and 12 hours. Al
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/backups")
+        .header("At", "tomorrow, 10am")
+        .body("Good morning")
+        .send();
+    ```
+
 Here are a few examples (assuming today's date is **12/10/2021, 9am, Eastern Time Zone**):
 
 <table class="remove-md-box"><tr>
@@ -888,6 +959,11 @@ For instance, assuming your topic is `mywebhook`, you can simply call `/mywebhoo
     file_get_contents('https://ntfy.sh/mywebhook/trigger');
     ```
 
+=== "Rust"
+    ``` rust
+    client.get("https://ntfy.sh/mywebhook/trigger").send();
+    ```
+
 To add a custom message, simply append the `message=` URL parameter. And of course you can set the 
 [message priority](#message-priority), the [message title](#message-title), and [tags](#tags-emojis) as well. 
 For a full list of possible parameters, check the list of [supported parameters and headers](#list-of-all-parameters).
@@ -935,6 +1011,11 @@ Here's an example with a custom message, tags and a priority:
 === "PHP"
     ``` php-inline
     file_get_contents('https://ntfy.sh/mywebhook/publish?message=Webhook+triggered&priority=high&tags=warning,skull');
+    ```
+
+=== "Rust"
+    ``` rust
+    client.get("https://ntfy.sh/mywebhook/publish?message=Webhook+triggered&priority=high&tags=warning,skull").send();
     ```
 
 ## Message templating
@@ -1094,6 +1175,13 @@ header or query parameter:
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.example.com/mytopic?template=myapp")
+        .body(r"{"status":"firing","type":"cpu","server":"ntfy.sh","percent":99}"#)
+        .send();
+    ```
+
 Which will result in a notification that looks like this:
 
 <figure markdown>
@@ -1215,6 +1303,13 @@ Here's an **easier example with a shorter JSON payload**:
             'content' => '{"hostname": "phil-pc", "error": {"level": "severe", "desc": "Disk has run out of space"}}'
         ]
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/mytopic?tpl=yes&t={{.hostname}}:+A+{{.error.level}}+error+has+occurred&m=Error+message:+{{.error.desc}}")
+        .body(r"{"hostname": "phil-pc", "error": {"level": "severe", "desc": "Disk has run out of space"}}"#)
+        .send();
     ```
 
 This example uses the `message`/`m` and `title`/`t` query parameters, but obviously this also works with the corresponding
@@ -1414,6 +1509,23 @@ is the only required one:
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/mytopic?tpl=yes&t={{.hostname}}:+A+{{.error.level}}+error+has+occurred&m=Error+message:+{{.error.desc}}")
+        .json(&json!({
+            "topic": "mytopic",
+            "message": "Disk space is low at 5.1 GB",
+            "title": "Low disk space alert",
+            "tags": ["warning","cd"],
+            "priority": 4,
+            "attach": "https://filesrv.lan/space.jpg",
+            "filename": "diskspace.jpg",
+            "click": "https://homecamera.lan/xasds1h2xsSsa/",
+            "actions": [["action": "view", "label": "Admin panel", "url": "https://filesrv.lan/admin" ]]
+        }))
+        .send();
+    ```
+
 The JSON message format closely mirrors the format of the message you can consume when you [subscribe via the API](subscribe/api.md) 
 (see [JSON message format](subscribe/api.md#json-message-format) for details), but is not exactly identical. Here's an overview of
 all the supported fields:
@@ -1565,6 +1677,14 @@ As an example, here's how you can create the above notification using this forma
             'content' => 'You left the house. Turn down the A/C?'
         ]
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/reddit_alerts")
+        .header("Actions", "view, Open portal, https://home.nest.com/, clear=true; http, Turn down, https://api.nest.com/, body='{\"temperature\": 65}'")
+        .body("You left the house. Turn down the A/C?")
+        .send();
     ```
 
 !!! info
@@ -1781,6 +1901,33 @@ Alternatively, the same actions can be defined as **JSON array**, if the notific
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/")
+        .json(&json!([
+            "topic": "myhome",
+            "message": "You left the house. Turn down the A/C?",
+            "actions": [
+                [
+                    "action": "view",
+                    "label": "Open portal",
+                    "url": "https://home.nest.com/",
+                    "clear": true
+                ],
+                [
+                    "action": "http",
+                    "label": "Turn down",
+                    "url": "https://api.nest.com/",
+                    "headers": [
+                        "Authorization": "Bearer ..."
+                    ],
+                    "body": "{\"temperature\": 65}"
+                ]
+            ]
+        ]))
+        .send();
+    ```
+
 The required/optional fields for each action depend on the type of the action itself. Please refer to 
 [`view` action](#open-websiteapp), [`broadcast` action](#send-android-broadcast), and [`http` action](#send-http-request) 
 for details.
@@ -1877,6 +2024,14 @@ Here's an example using the [`X-Actions` header](#using-a-header):
             'content' => 'Somebody retweeted your tweet.'
         ]
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/reddit_alerts")
+        .header("Actions", "view, Open Twitter, https://twitter.com/binwiederhier/status/1467633927951163392")
+        .body("Somebody retweeted your tweet.")
+        .send();
     ```
 
 And the same example using [JSON publishing](#publish-as-json):
@@ -2026,6 +2181,23 @@ And the same example using [JSON publishing](#publish-as-json):
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/")
+        .json(&json!([
+            "topic": "myhome",
+            "message": "Somebody retweeted your tweet.",
+            "actions": [
+                [
+                    "action": "view",
+                    "label": "Open Twitter",
+                    "url": "https://twitter.com/binwiederhier/status/1467633927951163392"
+                ]
+            ]
+        ]))
+        .send();
+    ```
+
 The `view` action supports the following fields:
 
 | Field    | Required | Type      | Default | Example               | Description                                      |
@@ -2128,6 +2300,14 @@ Here's an example using the [`X-Actions` header](#using-a-header):
             'content' => 'Your wife requested you send a picture of yourself.'
         ]
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/wifey")
+        .header("Actions", "broadcast, Take picture, extras.cmd=pic, extras.camera=front")
+        .body("our wife requested you send a picture of yourself.")
+        .send();
     ```
 
 And the same example using [JSON publishing](#publish-as-json):
@@ -2302,6 +2482,25 @@ And the same example using [JSON publishing](#publish-as-json):
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/")
+        .json(&json!([
+            "topic": "wifey",
+            "message": "Your wife requested you send a picture of yourself.",
+            "actions": [
+                [
+                "action": "broadcast",
+                "label": "Take picture",
+                "extras": [
+                    "cmd": "pic",
+                    "camera": "front"
+                ]
+            ]
+        ]))
+        .send();
+    ```
+
 The `broadcast` action supports the following fields:
 
 | Field    | Required | Type             | Default                      | Example                 | Description                                                                                                                                                                            |
@@ -2397,6 +2596,14 @@ Here's an example using the [`X-Actions` header](#using-a-header):
             'content' => 'Garage door has been open for 15 minutes. Close it?'
         ]
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/reddit_alerts")
+        .header("Actions", r#"http, Close door, https://api.mygarage.lan/, method=PUT, headers.Authorization=Bearer zAzsx1sk.., body={\"action\": \"close\"}"#)
+        .body("Garage door has been open for 15 minutes. Close it?")
+        .send();
     ```
 
 And the same example using [JSON publishing](#publish-as-json):
@@ -2589,6 +2796,28 @@ And the same example using [JSON publishing](#publish-as-json):
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/")
+        .json(&json!([
+            "topic": "myhome",
+            "message": "Garage door has been open for 15 minutes. Close it?",
+            "actions": [
+                [
+                    "action": "http",
+                    "label": "Close door",
+                    "url": "https://api.mygarage.lan/",
+                    "method": "PUT",
+                    "headers": [
+                        "Authorization": "Bearer zAzsx1sk.."
+                        ],
+                    "body": "{\"action\": \"close\"}"
+                ]
+            ]
+        ]))
+        .send();
+    ```
+
 The `http` action supports the following fields:
 
 | Field     | Required | Type               | Default   | Example                   | Description                                                                                                                                             |
@@ -2694,6 +2923,14 @@ Here's an example that will open Reddit when the notification is clicked:
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/reddit_alerts")
+        .header("Click", "[view](https://www.reddit.com/message/messages)")
+        .body("New messages on Reddit")
+        .send();
+    ```
+
 ## Attachments
 _Supported on:_ :material-android: :material-firefox:
 
@@ -2791,6 +3028,14 @@ Here's an example showing how to upload an image:
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.put("https://ntfy.sh/flowers")
+        .header("Filename", "flower.jpeg")
+        .body(File::open("from_a_file.txt")?)
+        .send();
+    ```
+
 Here's what that looks like on Android:
 
 <figure markdown>
@@ -2875,6 +3120,13 @@ Here's an example showing how to attach an APK file:
             "Attach: https://f-droid.org/F-Droid.apk",
         ]
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.put("https://ntfy.sh/mydownloads")
+        .header("Attach", "https://f-droid.org/F-Droid.apk")
+        .send();
     ```
 
 <figure markdown>
@@ -2984,6 +3236,16 @@ Here's an example showing how to include an icon:
         ],
         'content' => "The Wire, S01E01"
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/tvshows")
+        .header("Title", "Kodi: Resuming Playback")
+        .header("Tags", "arrow_forward")
+        .header("Icon", "https://styles.redditmedia.com/t5_32uhe/styles/communityIcon_xnt6chtnr2j21.png")
+        .body("The Wire, S01E01")
+        .send();
     ```
 
 Here's an example of how it will look on Android:
@@ -3101,6 +3363,16 @@ that, your IP address appears in the e-mail body. This is to prevent abuse.
             'content' => 'Unknown login from 5.31.23.83 to backups.example.com'
         ]
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/alerts")
+        .header("Email", "phil@example.com")
+        .header("Tags", "warning,skull,backup-host,ssh-login")
+        .header("Priority", "high")
+        .body("Unknown login from 5.31.23.83 to backups.example.com")
+        .send();
     ```
 
 Here's what that looks like in Google Mail:
@@ -3259,6 +3531,15 @@ Here's how you use it:
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/alerts")
+        .bearer_auth("tk_AgQdq7mVBoFD37zQVN29RhuMzNIz2")
+        .header("Call", "+12223334444")
+        .body("Your garage seems to be on fire. You should probably check that out.")
+        .send();
+    ```
+
 Here's what a phone call from ntfy sounds like:
 
 <audio controls>
@@ -3388,6 +3669,14 @@ Here's an example with a user `testuser` and password `fakepassword`:
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.example.com/mysecrets")
+        .basic_auth("testuser", Some("fakepassword"))
+        .body("Look ma, with auth")
+        .send();
+    ```
+
 To generate the `Authorization` header, use **standard base64** to encode the colon-separated `<username>:<password>` 
 and prepend the word `Basic`, i.e. `Authorization: Basic base64(<username>:<password>)`. Here's some pseudo-code that 
 hopefully explains it better:
@@ -3509,6 +3798,14 @@ with the token `tk_AgQdq7mVBoFD37zQVN29RhuMzNIz2`:
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.example.com/mysecrets")
+        .bearer_auth("tk_AgQdq7mVBoFD37zQVN29RhuMzNIz2")
+        .body("Look ma, with auth")
+        .send();
+    ```
+
 Alternatively, you can use [Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication) to send the 
 access token. When sending an empty username, the basic auth password is treated by the ntfy server as an 
 access token. This is primarily useful to make `curl` calls easier, e.g. `curl -u:tk_AgQdq7mVBoFD37zQVN29RhuMzNIz2 ...`:
@@ -3593,6 +3890,14 @@ access token. This is primarily useful to make `curl` calls easier, e.g. `curl -
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.example.com/mysecrets")
+        .basic_auth("", Some("tk_AgQdq7mVBoFD37zQVN29RhuMzNIz2"))
+        .body("Look ma, with auth")
+        .send();
+    ```
+
 
 ### Query param
 Here's an example using the `auth` query parameter:
@@ -3660,6 +3965,13 @@ Here's an example using the `auth` query parameter:
             'content' => 'Look ma, with auth'
         ]
     ]));
+    ```
+
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.example.com/mysecrets?auth=QmFzaWMgZEdWemRIVnpaWEk2Wm1GclpYQmhjM04zYjNKaw")
+        .body("Look ma, with auth")
+        .send();
     ```
 
 To generate the value of the `auth` parameter, encode the value of the `Authorization` header (see above) using 
@@ -3774,6 +4086,14 @@ are still delivered to connected subscribers, but [`since=`](subscribe/api.md#fe
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/mytopic")
+        .header("Cache", "no")
+        .body("This message won't be stored server-side")
+        .send();
+    ```
+
 ### Disable Firebase
 !!! info
     If `Firebase: no` is used and [instant delivery](subscribe/phone.md#instant-delivery) isn't enabled in the Android 
@@ -3852,7 +4172,20 @@ to `no`. This will instruct the server not to forward messages to Firebase.
             'header' =>
                 "Content-Type: text/plain\r\n" .
                 "Firebase: no",
-            'content' => 'This message won't be stored server-side'
+            'content' => 'This message won't be forwarded to FCM'
+        ]
+    ]));
+    ```
+
+=== "PHP"
+    ``` php-inline
+    file_get_contents('https://ntfy.sh/mytopic', false, stream_context_create([
+        'http' => [
+            'method' => 'POST',
+            'header' =>
+                "Content-Type: text/plain\r\n" .
+                "Firebase: no",
+            'content' => 'This message won't be forwarded to FCM'
         ]
     ]));
     ```

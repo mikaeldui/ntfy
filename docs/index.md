@@ -75,6 +75,13 @@ simple message using a POST request:
     ]));
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/mytopic")
+        .body("Backup successful 😀")
+        .send();
+    ```
+
 This will create a notification that looks like this:
 
 <figure markdown>
