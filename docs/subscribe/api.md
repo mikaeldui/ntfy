@@ -84,6 +84,14 @@ recommended way to subscribe to a topic**. The notable exception is JavaScript, 
     fclose($fp);
     ```
 
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/disk-alerts/json")
+        .header("Firebase", "no")
+        .body("This message won't be forwarded to FCM")
+        .send();
+    ```
+
 ### Subscribe as SSE stream
 Using [EventSource](https://developer.mozilla.org/en-US/docs/Web/API/EventSource) in JavaScript, you can consume
 notifications via a [Server-Sent Events (SSE)](https://en.wikipedia.org/wiki/Server-sent_events) stream. It's incredibly 

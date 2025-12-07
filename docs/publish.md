@@ -4177,17 +4177,12 @@ to `no`. This will instruct the server not to forward messages to Firebase.
     ]));
     ```
 
-=== "PHP"
-    ``` php-inline
-    file_get_contents('https://ntfy.sh/mytopic', false, stream_context_create([
-        'http' => [
-            'method' => 'POST',
-            'header' =>
-                "Content-Type: text/plain\r\n" .
-                "Firebase: no",
-            'content' => 'This message won't be forwarded to FCM'
-        ]
-    ]));
+=== "Rust"
+    ``` rust
+    client.post("https://ntfy.sh/mytopic")
+        .header("Firebase", "no")
+        .body("This message won't be forwarded to FCM")
+        .send();
     ```
 
 ### UnifiedPush
